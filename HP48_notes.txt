@@ -1,0 +1,33 @@
+
+
+To get an HP48 ploting the frequerncy response of a 
+Z transform, first define Z as 'EXP(-(0,1)).
+
+i.e.
+
+> 'EXP(-(0,1))'
+> 'Z'
+> STO
+
+Now define a function to convert a Z transform
+to ABS and then to DBs 
+
+> << ABS LOG10 10 * >>
+> '->ABS'
+> STO
+
+Now place in a test function say the 7/8ths LAG FILTER
+
+> ' 0.125/(1-0.875*Z)'
+> ->ABS
+
+Now store in 'EQ'
+
+Now get the plot menu.
+Set yrange to -40 to + 40
+Set xrange to 0 to 3.142
+
+PLOT func
+
+The Z transform magnitude response will now be displayed in the 
+HP48 graph
