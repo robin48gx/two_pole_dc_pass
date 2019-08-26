@@ -2,7 +2,7 @@
 set xrange[200:1000]
 
 #plot "tp.dat" using 1:3 title "input", "tp.dat" using 1:5 title "two pole", "tp.dat" using 1:6 title "34LAG", "tp.dat" using 1:7 title "78LAG"
-plot "tp.dat" using 1:3 title "input" with linespoints, "tp.dat" using 1:5 title "two pole" with linespoints,  "tp.dat" using 1:7 title "78LAG" with linespoints
+plot "tp.dat" using 1:3 title "input" with linespoints, "tp.dat" using 1:5 title "two pole" with linespoints,  "tp.dat" using 1:7 title "78LAG" with linespoints,  "tp.dat" using 1:5 title "two pole" with linespoints "tp.dat" using 1:9 title "LAG78 TWICE" with linespoints
 
 !sleep 10
 !sleep 10

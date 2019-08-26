@@ -55,7 +55,7 @@ two_pole_7_8 ( int16_t input ) {
 	       //
 	       -  (    (y2>>1) +  // half
 	               (y2>>2) +  // quarter
-                       (y2>>6) ); // 64th      
+		       (y2>>6) ); // 64th      
 
 
 	//
@@ -83,7 +83,7 @@ two_pole_7_8 ( int16_t input ) {
 int main () {
 
 	int i;
-	int16_t val,res, res34, res78,rr;
+	int16_t val,res, res34, res78, res78_2, rr;
 
 	for (i=0;i<1000;i++) {
 
@@ -102,8 +102,9 @@ int main () {
 
 		res34 = (((res34<<2) - res34)>>2) + (val>>2);
 		res78 = (((res78<<3) - res78)>>3) + (val>>3);
+		res78_2 = (((res78_2<<3) - res78_2)>>3) + (res78>>3); // feed res78 into another should be the same as two pole
 
-		printf ("%d val %d res %d res34 %d res78 %d\n",i, val,res, res34, res78);
+		printf ("%d val %d res %d res34 %d res78 %d res78_2 %d\n",i, val,res, res34, res78, res78_2);
 
 	}
 
