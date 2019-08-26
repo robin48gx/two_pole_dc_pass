@@ -77,8 +77,8 @@ two_pole_7_8 ( int16_t input ) {
 	return y0>>(BIN_FRACS+3); // divide back down for scaling and then divide by 8 filter gain // *res;
 }
 
-#define RAND_RANGE 100
-#define DC_TERM 1000
+#define RAND_RANGE 500
+#define DC_TERM 1500
 
 int main () {
 
