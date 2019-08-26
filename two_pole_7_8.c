@@ -1,6 +1,6 @@
 
 
-
+#include <stdlib.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <math.h>
@@ -33,7 +33,7 @@ two_pole_7_8 ( int16_t input ) {
 	// the minus 3 divides by 8	 : DOUBLE POLE
 	x0 <<= (BIN_FRACS-3) ;   // now all calculations are done times BIN_FRACS^2
 
-	// this works really well WHY?
+	// this works stabley but not well WHY?
 	//y0 = x0 + y1-(y1>>3) - ((y2>>1) + (y2>>2) + (y2>>6));
 	
         // should be 	
@@ -41,7 +41,7 @@ two_pole_7_8 ( int16_t input ) {
 	//
 	//
 	// OK this works well 
-	y0 = x0 + (14.0 / 8.0) * (double) y1 - (49.0/64.0) * (double) y2; 
+	// y0 = x0 + (14.0 / 8.0) * (double) y1 - (49.0/64.0) * (double) y2; 
 
 
 
@@ -77,17 +77,22 @@ two_pole_7_8 ( int16_t input ) {
 	return y0>>(BIN_FRACS+3); // divide back down for scaling and then divide by 8 filter gain // *res;
 }
 
-
+#define RAND_RANGE 100
+#define DC_TERM 1000
 
 int main () {
 
 	int i;
-	int16_t val,res, res34, res78;
+	int16_t val,res, res34, res78,rr;
 
 	for (i=0;i<1000;i++) {
 
-		// ramp + some sine
-		val = sin ( (double)i*10.0  / (3.142 * 2.0)  ) * 10.0 + 25000 ;
+	
+		val = sin ( (double)i*10.0  / (3.142 * 2.0)  ) * 10.0 + DC_TERM ;
+                rr = rand() % (RAND_RANGE*2);
+                  rr -= RAND_RANGE;
+
+	        val += rr;
 
 		// fast sine
 		//val = sin ( ((double)i*10.0)  / (3.142 * 2.0)  ) * 10000;
