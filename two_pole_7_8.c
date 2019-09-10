@@ -193,11 +193,12 @@ int zero_only_2 ( int input )
 
 	static int x0,x1,x2,x3,x4;
 
-	int res;
+	int res=1500*4;
 
-	// (z^2+1)^2
+	// (z^2+1)^2 ZEROS AT HALF NYQUIST
 	//    z^4    z^2     1
-	res = input + 2*x2 + x4;
+	//res = input + 2*x2 + x4;
+
 
 	x4 = x3; 
 	x3 = x2;
@@ -215,12 +216,16 @@ int zero_only_3 ( int input )
 	static int x0,x1,x2,x3,x4;
 	static int x5,x6,x7,x8,x9;
 
-	int res;
+	int res=1500;;
 
-	// (z^2+1)^3
+	// (Z+j)(Z-j) == (Z^2+1) // zero at nyquist 
+	// (z^2+1)^3 ZEROS AT HALF NYQUIST
 	//    z^6    z^4  2z^3   z^2  2*z   1
-	res = input + x2 +2*x3 + x4 +2*x2 + x6;
+	//res = input + x2 +2*x3 + x4 +2*x2 + x6;
 
+	// (Z^2 - 1)(Z+1) is zero at half nyquist and zero at nyquist
+	//  z^3 +z^2 + z + 1
+	res = input + x1 + x2 + x3;
 	x8 = x7; 
 	x7 = x6; 
 	x6 = x5; 
@@ -230,7 +235,7 @@ int zero_only_3 ( int input )
 	x2 = x1;
 	x1 = input;
 
-	return res/8;
+	return res/4;
 }
 
 int zero_only_4 ( int input )
@@ -239,10 +244,14 @@ int zero_only_4 ( int input )
 	static int x0,x1,x2,x3,x4;
 	static int x5,x6,x7,x8,x9;
 
-	int res;
+	int res=1500*16;
+	// (Z^2+1)^4 ZEROS AT HALF NYQUIST
 	//      z^8   2z^6  2z^5  2z^4  4z^3   2z^2   2z^1  + 1
-	res = input + 2*x2 +2*x3 + x4 + 4*x5 + 2*x6 + 2*x7 + x8;
+	//res = input + 2*x2 +2*x3 + x4 + 4*x5 + 2*x6 + 2*x7 + x8;
 
+	// (Z+1)(Z-1 // zero at nyquist zero at half nyquist
+	// (Z^2 - 1)
+	//
 	x8 = x7; 
 	x7 = x6; 
 	x6 = x5; 
