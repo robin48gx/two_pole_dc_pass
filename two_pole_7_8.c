@@ -146,7 +146,13 @@ two_pole_7_8_zg ( int16_t input ) { // with zero guard
 	return y0>>(BIN_FRACS+3); // divide back down for scaling and then divide by 8 filter gain // *res;
 }
 
-#define BIN_FRACS_15_16 9
+
+//
+// At 20,000 TDS with 1500 noise this caused instability in the filter
+// when BINFRACS was set to 9. As the input is not divided
+// its already 8 bits (*256) high. Try BINFRACS at 2.
+//
+#define BIN_FRACS_15_16 2
 
 // this is a 64 bit machine (the pi)
 //
@@ -203,9 +209,6 @@ two_pole_15_16 ( int16_t input ) {
 
 	return y0>>(BIN_FRACS_15_16); // divide back down for scaling and then divide by 8 filter gain // *res;
 }
-
-#define RAND_RANGE 500
-#define DC_TERM 1500
 
 
 
@@ -284,6 +287,19 @@ int zero_only_4 ( int input )
 
 	return res/16;
 }
+
+
+// This was initially tested at 1500 TDS with \pm 500 noise
+// Tests at 15000 with \pm 1500 noise at BINFRACS 9 caused instability in the two pole 15 16
+// BINFRACS down to 2 for that filter.
+
+// #define RAND_RANGE 500
+// #define DC_TERM    1500
+
+#define RAND_RANGE 500
+#define DC_TERM 1000
+
+
 int main () {
 
 	int i, zo2,zo3,zo4;
