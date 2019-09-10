@@ -23,7 +23,7 @@
 int16_t /* squared version of LAG_7_8 */
 two_pole_7_8 ( int16_t input ) {
 
-	static int32_t y1=0,y2=0;
+	static int32_t y1=0,y2=0, x1,x2;
 	int32_t * res;
 	int32_t y0;
 
@@ -45,7 +45,7 @@ two_pole_7_8 ( int16_t input ) {
 
 
 
-	y0 = x0 +
+	y0 = x0 + 
 	       //	(14.0 / 8.0) * (double) y1
 	       //	this is 7/4
 	       y1 + y1 - (y1>>2)  
@@ -67,6 +67,8 @@ two_pole_7_8 ( int16_t input ) {
 
 	y2 = y1;
 	y1 = y0;
+	x2 = x1;
+	x1 = x0;
 
 	//res = (short int *)&y0;
 	//res++; 
@@ -77,13 +79,185 @@ two_pole_7_8 ( int16_t input ) {
 	return y0>>(BIN_FRACS+3); // divide back down for scaling and then divide by 8 filter gain // *res;
 }
 
+
+int16_t /* squared version of LAG_7_8 */
+two_pole_7_8_zg ( int16_t input ) { // with zero guard
+
+	static int32_t y1=0,y2=0, x1,x2;
+	int32_t * res;
+	int32_t y0;
+
+	int32_t x0 = input;
+
+	// x0 times 0.125	
+	// the minus 3 divides by 8	 : DOUBLE POLE
+	x0 <<= (BIN_FRACS-3) ;   // now all calculations are done times BIN_FRACS^2
+
+	// this works stabley but not well WHY?
+	//y0 = x0 + y1-(y1>>3) - ((y2>>1) + (y2>>2) + (y2>>6));
+	
+        // should be 	
+	//y0 = x0 + y1+y1-(y1>>2) - (y2>>1 + y2>>2 + y2>>6);
+	//
+	//
+	// OK this works well 
+	// y0 = x0 + (14.0 / 8.0) * (double) y1 - (49.0/64.0) * (double) y2; 
+
+
+
+	y0 = (x0>>1) +  (x0>>2) + (x0>>6) + (x2>>1) +  // 49/64 * x0 + 1/2 * x2
+	       //	(14.0 / 8.0) * (double) y1
+	       //	this is 7/4
+	       y1 + y1 - (y1>>2)  
+	       //
+	       //
+	       //	- (49.0/64.0) * (double) y2; 
+	       //
+	       -  (    (y2>>1) +  // half
+	               (y2>>2) +  // quarter
+		       (y2>>6) ); // 64th      
+
+
+	//
+	// y0 = x0/64 + (y1 * 7) / 4 + (y2*49)/64;
+
+	// see what happens when y2>>6 is left out. I theory d.c goes unstable
+	// and yes it does! 25AUG2019
+	// y0 = x0 + y1-(y1>>3) - (y2>>1 + y2>>2  /* + y2>>6*/);
+
+	y2 = y1;
+	y1 = y0;
+	x2 = x1;
+	x1 = x0;
+
+	//res = (short int *)&y0;
+	//res++; 
+	//printf("y0=%X res should be %X res=%x\n",y0, y0>>16, res);
+	//
+
+	// the plus 3 divides by 8	
+	return y0>>(BIN_FRACS+3); // divide back down for scaling and then divide by 8 filter gain // *res;
+}
+
+#define BIN_FRACS_15_16 9
+
+// this is a 64 bit machine (the pi)
+//
+int16_t /* squared version of LAG_7_8 */
+two_pole_15_16 ( int16_t input ) {
+
+	static int32_t y1=0,y2=0, x1, x2;
+	int32_t * res;
+	int32_t y0;
+
+	int32_t x0 = input;
+
+	// x0 times 0.125	
+	// the minus 3 divides by 8	 : DOUBLE POLE
+	x0 <<= (BIN_FRACS_15_16) ;   // now all calculations are done times BIN_FRACS^2
+
+
+	y0 = x0  +
+	       //	(30.0 / 16.0) * (double) y1
+	       //	this is 7/8
+	       y1 + y1 - (y1>>3)  
+	       //
+	       //
+	       //	- (49.0/64.0) * (double) y2; 
+	       //
+	       -  (    (y2>>1) +  // half
+	               (y2>>2) +  // quarter
+		       (y2>>3) +   // eighth
+		       (y2>>8)     // 256th 
+		  );      
+
+
+	y2 = y1;
+	y1 = y0;
+
+
+	// gain of the filter is 256 ((1/16)^2) if x0 is allowed in withiout pre-dividing
+	//
+	y0 >>= 8;
+
+	return y0>>(BIN_FRACS_15_16); // divide back down for scaling and then divide by 8 filter gain // *res;
+}
+
 #define RAND_RANGE 500
 #define DC_TERM 1500
 
+
+
+int zero_only_2 ( int input )
+{
+
+	static int x0,x1,x2,x3,x4;
+
+	int res;
+
+	// (z^2+1)^2
+	//    z^4    z^2     1
+	res = input + 2*x2 + x4;
+
+	x4 = x3; 
+	x3 = x2;
+	x2 = x1;
+	x1 = input;
+
+	return res/4;
+}
+
+
+
+int zero_only_3 ( int input )
+{
+
+	static int x0,x1,x2,x3,x4;
+	static int x5,x6,x7,x8,x9;
+
+	int res;
+
+	// (z^2+1)^3
+	//    z^6    z^4  2z^3   z^2  2*z   1
+	res = input + x2 +2*x3 + x4 +2*x2 + x6;
+
+	x8 = x7; 
+	x7 = x6; 
+	x6 = x5; 
+	x5 = x4; 
+	x4 = x3; 
+	x3 = x2;
+	x2 = x1;
+	x1 = input;
+
+	return res/8;
+}
+
+int zero_only_4 ( int input )
+{
+
+	static int x0,x1,x2,x3,x4;
+	static int x5,x6,x7,x8,x9;
+
+	int res;
+	//      z^8   2z^6  2z^5  2z^4  4z^3   2z^2   2z^1  + 1
+	res = input + 2*x2 +2*x3 + x4 + 4*x5 + 2*x6 + 2*x7 + x8;
+
+	x8 = x7; 
+	x7 = x6; 
+	x6 = x5; 
+	x5 = x4; 
+	x4 = x3; 
+	x3 = x2;
+	x2 = x1;
+	x1 = input;
+
+	return res/16;
+}
 int main () {
 
-	int i;
-	int16_t val,res, res34, res78, res78_2, rr;
+	int i, zo2,zo3,zo4;
+	int16_t val,res, res34, res78, res78_2, rr, res_1516;
 
 	for (i=0;i<1000;i++) {
 
@@ -99,16 +273,28 @@ int main () {
 
 
 		res = two_pole_7_8 ( val );
+		res_1516 = two_pole_15_16 ( val );
+
+
+
+
+		zo2 = zero_only_2 (val);
+		zo3 = zero_only_3 (val);
+		zo4 =  zero_only_4 (val);
 
 		res34 = (((res34<<2) - res34)>>2) + (val>>2);
 		res78 = (((res78<<3) - res78)>>3) + (val>>3);
 		res78_2 = (((res78_2<<3) - res78_2)>>3) + (res78>>3); // feed res78 into another should be the same as two pole
-
-		printf ("%d val %d res %d res34 %d res78 %d res78_2 %d\n",i, val,res, res34, res78, res78_2);
+               
+		//        1      3     5        7        9          11          13     15     17     19
+		printf ("%d val %d res %d res34 %d res78 %d res78_2 %d res_1516 %d zo2 %d zo3 %d zo4 %d EOL\n",
+				i, val,res, res34, res78, res78_2, res_1516, zo2, zo3, zo4);
 
 	}
 
 	return 0;
 }
 	
+
+
 
