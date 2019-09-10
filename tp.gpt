@@ -1,9 +1,16 @@
 
 
-#plot "tp.dat" using 1:3 title "input", "tp.dat" using 1:5 title "two pole", "tp.dat" using 1:6 title "34LAG", "tp.dat" using 1:7 title "78LAG"
+plot "tp.dat" using 1:3 title "input" with linespoints, "tp.dat" using 1:5 title "two pole" with linespoints, "tp.dat" using 1:6 title "34LAG" with linespoints, "tp.dat" using 1:7 title "78LAG" with linespoints, "tp.dat" using 1:13 title "two pole 15 16" with linespoints
+
+
 #plot "tp.dat" using 1:3 title "input" with linespoints, "tp.dat" using 1:5 title "two pole" with linespoints,  "tp.dat" using 1:7 title "78LAG" with linespoints,  "tp.dat" using 1:9 title "78LAG TWICE" with linespoints, "tp.dat" using 1:11 title "two pole 15 16"
-plot "tp.dat" using 1:3 title "input" with linespoints, "tp.dat" using 1:5 title "two pole" with linespoints, "tp.dat" using 1:11 title "two pole 15 16" with linespoints, "tp.dat" using 1:13 title "zero only" with linespoints
-plot "tp.dat" using 1:3 title "input" with linespoints, "tp.dat" using 1:5 title "two pole" with linespoints,  "tp.dat" using 1:15 title "7 8 two pole ZG" with linespoints, "tp.dat" using 1:17 title "zero only^3" with linespoints,"tp.dat" using 1:19 title "zero only^4" with linespoints
+#
+#
+
+#plot "tp.dat" using 1:3 title "input" with linespoints, "tp.dat" using 1:5 title "two pole" with linespoints, "tp.dat" using 1:13 title "two pole 15 16" with linespoints
+
+
+#plot "tp.dat" using 1:3 title "input" with linespoints, "tp.dat" using 1:5 title "two pole" with linespoints,  "tp.dat" using 1:15 title "7 8 two pole ZG" with linespoints, "tp.dat" using 1:17 title "zero only^3" with linespoints,"tp.dat" using 1:19 title "zero only^4" with linespoints
 
 !sleep 10
 !sleep 10

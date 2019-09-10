@@ -86,7 +86,7 @@ two_pole_7_8 ( int16_t input ) {
 int16_t /* squared version of LAG_7_8 */
 two_pole_7_8_zg ( int16_t input ) { // with zero guard
 
-	static int32_t y1=0,y2=0, x1,x2;
+	static int32_t y1=0,y2=0, x1,x2,x3,x4,x5,x6,x7,x8;
 	int32_t * res;
 	int32_t y0;
 
@@ -107,8 +107,10 @@ two_pole_7_8_zg ( int16_t input ) { // with zero guard
 	// y0 = x0 + (14.0 / 8.0) * (double) y1 - (49.0/64.0) * (double) y2; 
 
 
-
-	y0 = (x0>>1) +  (x0>>2) + (x0>>6) + (x2>>1) +  // 49/64 * x0 + 1/2 * x2
+        // (z-j)(z+j) zeros at half nyquist (Z^2 + 1) x0 + x2
+	y0 =  //(x0>>1) + (x2>>1) + 
+		(x0+x1+x2+x3) +	
+		//(x0>>1) +  (x0>>2) + (x0>>6) + (x2>>1) +  // 49/64 * x0 + 1/2 * x2
 	       //	(14.0 / 8.0) * (double) y1
 	       //	this is 7/4
 	       y1 + y1 - (y1>>2)  
@@ -130,6 +132,8 @@ two_pole_7_8_zg ( int16_t input ) { // with zero guard
 
 	y2 = y1;
 	y1 = y0;
+	x4 = x3;
+	x3 = x2;
 	x2 = x1;
 	x1 = x0;
 
@@ -146,7 +150,7 @@ two_pole_7_8_zg ( int16_t input ) { // with zero guard
 
 // this is a 64 bit machine (the pi)
 //
-int16_t /* squared version of LAG_7_8 */
+int16_t /* squared version of LAG_15_16 */
 two_pole_15_16 ( int16_t input ) {
 
 	static int32_t y1=0,y2=0, x1, x2;
@@ -155,31 +159,45 @@ two_pole_15_16 ( int16_t input ) {
 
 	int32_t x0 = input;
 
-	// x0 times 0.125	
-	// the minus 3 divides by 8	 : DOUBLE POLE
+
 	x0 <<= (BIN_FRACS_15_16) ;   // now all calculations are done times BIN_FRACS^2
 
 
 	y0 = x0  +
-	       //	(30.0 / 16.0) * (double) y1
-	       //	this is 7/8
+	       //	
+	       //	this is 7/8 which is 2 * 15/16...
 	       y1 + y1 - (y1>>3)  
 	       //
 	       //
 	       //	- (49.0/64.0) * (double) y2; 
 	       //
-	       -  (    (y2>>1) +  // half
-	               (y2>>2) +  // quarter
-		       (y2>>3) +   // eighth
-		       (y2>>8)     // 256th 
-		  );      
+	       ;
+
+
+	       //-  (    (y2>>1) +  // half
+	       //        (y2>>2) +  // quarter
+		//	       (y2>>3) +   // eighth
+		//	       (y2>>8)     // 256th 
+		//	  );      
+		//
+		// try to do the shfts in a way effecient for the HYTEC PIC18 compiler
+		//
+		y2>>=1;
+		y0 -= y2;
+		y2>>=1;
+		y0 -= y2;
+		y2>>=1;
+		y0 -= y2;
+		y2>>=5;
+		y0 -= y2;
+		
 
 
 	y2 = y1;
 	y1 = y0;
 
 
-	// gain of the filter is 256 ((1/16)^2) if x0 is allowed in withiout pre-dividing
+	// gain of the filter is 256 ((1/16)^2) if x0 is allowed in without pre-dividing
 	//
 	y0 >>= 8;
 
