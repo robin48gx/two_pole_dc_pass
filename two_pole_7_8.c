@@ -80,6 +80,9 @@ two_pole_7_8 ( int16_t input ) {
 }
 
 
+// Added zero guard. tried a pair of zeros near unit circle 
+// 7/8 in ADJ, i.e hyp = 1 so on unit circle.
+//
 int16_t /* squared version of LAG_7_8 */
 two_pole_7_8_zg ( int16_t input ) { // with zero guard
 
@@ -287,7 +290,7 @@ int main () {
 
 
 
-		zo2 = zero_only_2 (val);
+		zo2 = two_pole_7_8_zg(val); // zero_only_2 (val);
 		zo3 = zero_only_3 (val);
 		zo4 =  zero_only_4 (val);
 
