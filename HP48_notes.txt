@@ -1,11 +1,11 @@
 
 
 To get an HP48 ploting the frequerncy response of a 
-Z transform, first define Z as 'EXP(-(0,1)).
+Z transform, first define Z as 'EXP(X*(0,-1)).
 
 i.e.
 
-> 'EXP(-(0,1))'
+> 'EXP(X*(0,-1))'
 > 'Z'
 > STO
 
