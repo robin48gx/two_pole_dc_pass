@@ -289,6 +289,32 @@ int zero_only_4 ( int input )
 }
 
 
+// 1/16 is 0.625
+//
+// A double precision two pole filter could be used in a higher level
+// to further smooth readings
+
+#define DOUBLE_FILTER_PARAM 0.01
+#define DOUBLE_FILTER_PARAM_LAG (1.0 - DOUBLE_FILTER_PARAM)
+int16_t /* squared version of LAG 0.01 0.99 */
+two_pole_double_low_pass ( int16_t input ) {
+
+	static double x0, y1, y2;
+	static double res;
+
+	x0 = input;
+
+	res =  x0 * (DOUBLE_FILTER_PARAM *  DOUBLE_FILTER_PARAM);
+
+	res += y1 * 2.0 * DOUBLE_FILTER_PARAM_LAG;
+	res -= y2 * (DOUBLE_FILTER_PARAM_LAG * DOUBLE_FILTER_PARAM_LAG);
+
+	y2 = y1;
+	y1 = res;
+
+	return (int16_t) res + 0.5;
+}
+
 // This was initially tested at 1500 TDS with \pm 500 noise
 // Tests at 15000 with \pm 1500 noise at BINFRACS 9 caused instability in the two pole 15 16
 // BINFRACS down to 2 for that filter.
@@ -303,7 +329,7 @@ int zero_only_4 ( int input )
 int main () {
 
 	int i, zo2,zo3,zo4;
-	int16_t val,res, res34, res78, res78_2, rr, res_1516;
+	int16_t val,res, res34, res78, res78_2, rr, res_1516, tpdlp, tpdlp_1516;
 
 	for (i=0;i<1000;i++) {
 
@@ -327,14 +353,16 @@ int main () {
 		zo2 = two_pole_7_8_zg(val); // zero_only_2 (val);
 		zo3 = zero_only_3 (val);
 		zo4 =  zero_only_4 (val);
+		tpdlp      =  two_pole_double_low_pass ( val );
+		tpdlp_1516 =  two_pole_double_low_pass (res_1516); // as fed by the yellow trace
 
 		res34 = (((res34<<2) - res34)>>2) + (val>>2);
 		res78 = (((res78<<3) - res78)>>3) + (val>>3);
 		res78_2 = (((res78_2<<3) - res78_2)>>3) + (res78>>3); // feed res78 into another should be the same as two pole
                
-		//        1      3     5        7        9          11          13     15     17     19
-		printf ("%d val %d res %d res34 %d res78 %d res78_2 %d res_1516 %d zo2 %d zo3 %d zo4 %d EOL\n",
-				i, val,res, res34, res78, res78_2, res_1516, zo2, zo3, zo4);
+		//        1      3     5        7        9          11          13     15     17     19       21
+		printf ("%d val %d res %d res34 %d res78 %d res78_2 %d res_1516 %d zo2 %d zo3 %d zo4 %d tpdlp_1516 %dEOL\n",
+				i, val,res, res34, res78, res78_2, res_1516, zo2, zo3, zo4, tpdlp_1516);
 
 	}
 
