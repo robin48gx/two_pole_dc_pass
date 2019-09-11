@@ -171,7 +171,7 @@ two_pole_15_16 ( int16_t input ) {
 
 	y0 = x0  +
 	       //	
-	       //	this is 7/8 which is 2 * 15/16...
+	       //	this is 30/16 == 15/8
 	       y1 + y1 - (y1>>3)  
 	       //
 	       //
