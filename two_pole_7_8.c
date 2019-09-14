@@ -289,7 +289,7 @@ int zero_only_4 ( int input )
 }
 
 
-// 1/16 is 0.625
+// 1/16 is 0.0625
 //
 // A double precision two pole filter could be used in a higher level
 // to further smooth readings
