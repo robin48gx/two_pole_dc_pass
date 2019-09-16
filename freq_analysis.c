@@ -94,16 +94,39 @@ main () {
 	}
 
 	// simple lag filter
-	// xz[0] = 0.125;
-	// yp[0] = 1.0;
-	// yp[1] = -0.875;
-	//
-	//
-	//simple 7/8th lag filter squared
-	xz[0] = (0.125*0.125);
+	xz[0] = 0.125;
 	yp[0] = 1.0;
-	yp[1] = -(2.0*0.875);
-	yp[2] = (0.875*0.875); 
+	yp[1] = -0.875;
+
+
+	// simple 7/8th lag filter squared
+	//
+	// xz[0] = (0.125*0.125);
+	// yp[0] = 1.0;
+	// yp[1] = -(2.0*0.875);
+	// yp[2] = (0.875*0.875); 
+
+	// simple bandpass
+	// (Z-1)(Z+1) = Z^2-1
+	// xz[0] = 1.0;
+	// xz[1] = 0.0;
+	// xz[2] = -1.0;
+	// yp[0] = 1.0;
+
+        // peaky x4 bandpass, no d.c. no high freq near nyquist.	
+	// (Z^2-1)^2
+	// 
+	// xz[0] = 1.0;
+	// xz[1] = 0.0;
+	// xz[2] = -2.0;
+	// xz[3] = 0.0;
+	// xz[4] = 1.0;
+	// yp[0] = 1.0;
+	// yp[1] = 0.0;
+	// yp[2] = 0.0;
+	//
+	
+	
 
 	for (i=0;i<NYQUIST;i++) { 
 
