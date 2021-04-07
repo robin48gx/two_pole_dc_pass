@@ -87,6 +87,7 @@ main () {
 	COMPLEX x,x_num,x_den, x_ans_den, x_ans_num, ccc;
 	int i,j,k; // counters
 	double r; // angle in radians
+	double sixteenth = 1.0/16.0;
 
 	for (k=0;k<10;k++) {  // zero all the Z parameters
 		xz[k] = 0.0;
@@ -94,9 +95,9 @@ main () {
 	}
 
 	// simple lag filter
-	xz[0] = 0.125;
-	yp[0] = 1.0;
-	yp[1] = -0.875;
+	// xz[0] = 0.125;
+	// yp[0] = 1.0;
+	// yp[1] = -0.875;
 
 
 	// simple 7/8th lag filter squared
@@ -105,6 +106,14 @@ main () {
 	// yp[0] = 1.0;
 	// yp[1] = -(2.0*0.875);
 	// yp[2] = (0.875*0.875); 
+	//
+	// simple 15/16 lag filter squared
+	//
+	xz[0] = (sixteenth*sixteenth);
+	yp[0] = 1.0;
+	yp[1] = -(2.0*(1.0-sixteenth));
+	yp[2] = ((1.0-sixteenth)*(1.0-sixteenth));
+
 
 	// simple bandpass
 	// (Z-1)(Z+1) = Z^2-1
