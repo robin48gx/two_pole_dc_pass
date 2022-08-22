@@ -31,3 +31,18 @@ PLOT func
 
 The Z transform magnitude response will now be displayed in the 
 HP48 graph
+
+Adding TAU. The above will provide a mag plot where the highest frequency resolvable, Nyquist, is
+pi, 3.142 etc.
+This can be normalised to the sampling frequency by adding a variable TAU (ALPHA BLUE ARROW T)
+to the definition of the Z operator.
+
+'EXP(X*2.pi*tau*(0,1))'
+'Z'
+STO
+
+sanity check:
+tau is the sampling rate. So if the sample rate is 100kHz say, then tau = 10e-6
+X now becomes the frequency, so with X at 25kHz 25000 * 2 * pi * 10e-6 = 0.5 pi, correct, so 50k the Niquist frequency would be pi.
+
+
