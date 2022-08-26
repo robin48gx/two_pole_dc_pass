@@ -43,6 +43,6 @@ STO
 
 sanity check:
 tau is the sampling rate. So if the sample rate is 100kHz say, then tau = 10e-6
-X now becomes the frequency, so with X at 25kHz 25000 * 2 * pi * 10e-6 = 0.5 pi, correct, so 50k the Niquist frequency would be pi.
+X now becomes the frequency, so with X at 25kHz 25000 * 2 * pi * 10e-6 = 0.5 pi, correct, so 50k the Nyquist frequency would be pi.
 
 
