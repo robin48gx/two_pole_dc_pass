@@ -90,7 +90,7 @@ int main () {
 	int i,j,k; // counters
 	double r; // angle in radians
 	double sixteenth = 1.0/16.0;
-	double frequency, tau;
+	double frequency, RCtau;
 
 	for (k=0;k<10;k++) {  // zero all the Z parameters
 		xz[k] = 0.0;
@@ -178,13 +178,13 @@ int main () {
 
 		if ( i ) frequency = ( ((double)i)/(NYQUIST*SAMPLE_RATE*2.0) );
 		if ( frequency > 0.0 )
-			tau = 1.0/(frequency*2.0*PI);
+			RCtau = 1.0/(frequency*2.0*PI);
 
-		// where tau is the time constant,i.e. where mag is 0.707
+		// where RCtau is the time constant,i.e. where mag is 0.707
                 // then that would be the time constant, RC, for that filter
 		//
 		//
-		printf(" %d arg = %f mag %f maglog10 %f f %f tau %f \n", 
+		printf(" %d arg = %f mag %f maglog10 %f f %f RCtau %f \n", 
                      i, arg(ccc), mag(ccc), log(mag(ccc))*10.0,frequency,tau);
 	}
 
